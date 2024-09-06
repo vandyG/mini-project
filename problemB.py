@@ -21,22 +21,44 @@ I_last (check the different scenarios)
 """
 
 import re
+from textwrap import dedent
+from typing import Dict, List
 
-from pygments import highlight
 from rich import print
 
 
-def main():
-    SNOWBALL = """I made myself a snowball.
-As perfect as could be.
-I thought I'd keep it as a pet.
-And let it sleep with me.
-I made it some pajamas.
-And a pillow for its head.
-Then last night it ran away,
-But first it wet the bed."""
+def count_stats(search: List[str], string: str) -> Dict[str, List]:
+    """Find all word/substring matches for each search term in the input string.
 
-    IT = "it"
+    Args:
+        search (List[str]): List of items to search.
+        string (str): The string to search in.
+
+    Returns:
+        Dict[str, List]: List of Match objects for each search term.
+    """
+    matches = {}
+
+    for term in search:
+        pattern = re.compile(f"\b{term}\b|({term})", flags=re.I)
+        curr_matches = list(pattern.finditer(string))
+        matches[term] = curr_matches
+
+    return matches
+
+
+def main():
+    """TODO."""
+    SNOWBALL = dedent("""
+        I made myself a snowball.
+        As perfect as could be.
+        I thought I'd keep it as a pet.
+        And let it sleep with me.
+        I made it some pajamas.
+        And a pillow for its head.
+        Then last night it ran away,
+        But first it wet the bed.
+    """)
 
     # it_count = SNOWBALL.lower().count(IT.lower())
     it_word_pattern = re.compile(r"(\bit\b)|(it)", flags=re.I)
