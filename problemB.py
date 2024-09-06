@@ -20,14 +20,15 @@ I_last (check the different scenarios)
 
 """
 
+import random
 import re
 from textwrap import dedent
-from typing import Dict, List
+from typing import Dict, Generator, List
 
 from rich import print
 
 
-def count_stats(search: List[str], string: str) -> Dict[str, List]:
+def count_stats(search: List[str], string: str) -> Dict[str, List[re.Match]]:
     """Find all word/substring matches for each search term in the input string.
 
     Args:
@@ -40,15 +41,42 @@ def count_stats(search: List[str], string: str) -> Dict[str, List]:
     matches = {}
 
     for term in search:
-        pattern = re.compile(f"\b{term}\b|({term})", flags=re.I)
+        pattern = re.compile(r"(\b" + term + r"\b)|(" + term + r")", flags=re.I)
         curr_matches = list(pattern.finditer(string))
+
         matches[term] = curr_matches
 
     return matches
 
 
+def pretty_print(search: List[str], string: str) -> Generator:
+    """Highlight the matched terms in the string.
+
+    Args:
+        search (List[str]): List of search terms.
+        string (str): Input string.
+
+    Yields:
+        Generator: Output string with the search term highlighted.
+    """
+    colors = ["red", "green", "blue", "yellow", "magenta", "cyan"]
+
+    for term in search:
+        input = string
+        substring_pattern = re.compile(term, re.I)
+        color = random.choice(colors)
+
+        input = re.sub(
+            substring_pattern,
+            lambda match: f"[bold {color}]{match.group(0)}[/bold {color}]",
+            input,  # noqa: B023
+        )
+
+        yield input
+
+
 def main():
-    """TODO."""
+    """Main funciton."""
     SNOWBALL = dedent("""
         I made myself a snowball.
         As perfect as could be.
@@ -60,64 +88,36 @@ def main():
         But first it wet the bed.
     """)
 
-    # it_count = SNOWBALL.lower().count(IT.lower())
-    it_word_pattern = re.compile(r"(\bit\b)|(it)", flags=re.I)
-    # it_substring_pattern = re.compile(r"\Bit\B", flags=re.I)
+    search_terms = ["it", "i"]
 
-    SNOWBALL_OUTPUT = ""
-    prevend = 0
-    it_word_count = 0
-    it_count = 0
-    it_word_first = None
-    it_substring_first = None
-    it_not_word_substring_first = None
+    matches = count_stats(search_terms, SNOWBALL)
 
-    it_word_iter = it_word_pattern.finditer(SNOWBALL)
+    for match_term, match_list in matches.items():
+        just_words = [match for match in match_list if match.group(1)]
+        just_non_words = [match for match in match_list if not match.group(1)]
+        count = len(match_list)
+        word_count = len(just_words)
 
-    for word in it_word_iter:
-        it_count += 1
-        start = word.start()
-        end = word.end()
+        def min_func(match):
+            return match.start()
 
-        if word.group(1):
-            highlighted_word = f"[bold red]{word.group(1)}[/bold red]"
-            it_word_count += 1
+        first_substring = min(match_list, key=min_func)
+        first_word = min(just_words, key=min_func)
+        first_non_word = min(just_non_words, key=min_func)
 
-            if it_word_count == 1:
-                it_word_first = (start, end)
+        print(f"Total [bold]'{match_term}'[/bold] substrings: {count}")
+        print(f"Total [bold]'{match_term}'[/bold] words: {word_count}")
+        print(f"First [bold]'{match_term}'[/bold] substrings: {first_substring}")
+        print(f"First [bold]'{match_term}'[/bold] word: {first_word}")
+        print(f"First [bold]'{match_term}'[/bold] non-word substring: {first_non_word}")
+        print(next(pretty_print(search_terms, SNOWBALL)))
+        print("---")
 
-        else:
-            highlighted_word = f"[bold blue]{word.group(0)}[/bold blue]"
-
-        if it_count == 1:
-            it_substring_first = (start, end)
-
-        if it_count - it_word_count == 1:
-            it_not_word_substring_first = (start, end)
-
-        SNOWBALL_OUTPUT = SNOWBALL_OUTPUT + SNOWBALL[prevend:start] + highlighted_word
-        prevend = end
-
-    SNOWBALL_OUTPUT = SNOWBALL_OUTPUT + SNOWBALL[prevend:]
-    print(SNOWBALL_OUTPUT)
-    print(f"Total 'it' substrings = {it_count}")
-    print(f"Total 'it' words = {it_word_count}")
+    pretty_print(search_terms, SNOWBALL)
 
     len_poem = len(SNOWBALL) - SNOWBALL.count("\n")
 
-    # it_first = SNOWBALL.find(IT)
-
-    # I_last = SNOWBALL.rfind("I")
-
-    # print(f"{it_count=}")
-    print(f"{it_count=}")
-    print(f"{it_word_count=}")
-    print(f"{len_poem=}")
-    print(f"{it_word_first=}")
-    print(f"{it_substring_first=}")
-    print(f"{it_not_word_substring_first=}")
-    # print(f"{it_first=}")
-    # print(f"{I_last=}")
+    print(f"Number of characters in poem: {len_poem}")
 
 
 if __name__ == "__main__":
