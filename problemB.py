@@ -1,3 +1,4 @@
+# %%
 """snowball is one of the most famous poems in literature. It says.
 
 I made myself a snowball.
@@ -20,6 +21,7 @@ I_last (check the different scenarios)
 
 """
 
+# %%
 import random
 import re
 from textwrap import dedent
@@ -28,6 +30,7 @@ from typing import Dict, Generator, List
 from rich import print
 
 
+# %%
 def count_stats(search: List[str], string: str) -> Dict[str, List[re.Match]]:
     """Find all word/substring matches for each search term in the input string.
 
@@ -49,6 +52,7 @@ def count_stats(search: List[str], string: str) -> Dict[str, List[re.Match]]:
     return matches
 
 
+# %%
 def pretty_print(search: List[str], string: str) -> Generator:
     """Highlight the matched terms in the string.
 
@@ -75,6 +79,7 @@ def pretty_print(search: List[str], string: str) -> Generator:
         yield input
 
 
+# %%
 def main():
     """Main funciton."""
     SNOWBALL = dedent("""
@@ -120,5 +125,6 @@ def main():
     print(f"Number of characters in poem: {len_poem}")
 
 
+# %%
 if __name__ == "__main__":
     main()
