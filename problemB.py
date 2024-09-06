@@ -96,6 +96,7 @@ def main():
     search_terms = ["it", "i"]
 
     matches = count_stats(search_terms, SNOWBALL)
+    print_gen = pretty_print(search_terms, SNOWBALL)
 
     for match_term, match_list in matches.items():
         just_words = [match for match in match_list if match.group(1)]
@@ -115,10 +116,8 @@ def main():
         print(f"First [bold]'{match_term}'[/bold] substrings: {first_substring.span()}")
         print(f"First [bold]'{match_term}'[/bold] word: {first_word.span()}")
         print(f"First [bold]'{match_term}'[/bold] non-word substring: {first_non_word.span()}")
-        print(next(pretty_print(search_terms, SNOWBALL)))
+        print(next(print_gen))
         print("---")
-
-    pretty_print(search_terms, SNOWBALL)
 
     len_poem = len(SNOWBALL) - SNOWBALL.count("\n")
 
