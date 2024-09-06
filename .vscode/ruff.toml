@@ -10,4 +10,5 @@ select = [
   "W",    # pycodestyle
   "YTT",  # flake8-2020
 ]
+pydocstyle.convention = "google"
 extend-ignore = ["B018", "B019"]
