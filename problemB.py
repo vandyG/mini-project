@@ -72,8 +72,8 @@ def pretty_print(search: List[str], string: str) -> Generator:
 
         input = re.sub(
             substring_pattern,
-            lambda match: f"[bold {color}]{match.group(0)}[/bold {color}]",
-            input,  # noqa: B023
+            lambda match: f"[bold {color}]{match.group(0)}[/bold {color}]",  # noqa: B023
+            input,
         )
 
         yield input
@@ -112,9 +112,9 @@ def main():
 
         print(f"Total [bold]'{match_term}'[/bold] substrings: {count}")
         print(f"Total [bold]'{match_term}'[/bold] words: {word_count}")
-        print(f"First [bold]'{match_term}'[/bold] substrings: {first_substring}")
-        print(f"First [bold]'{match_term}'[/bold] word: {first_word}")
-        print(f"First [bold]'{match_term}'[/bold] non-word substring: {first_non_word}")
+        print(f"First [bold]'{match_term}'[/bold] substrings: {first_substring.span()}")
+        print(f"First [bold]'{match_term}'[/bold] word: {first_word.span()}")
+        print(f"First [bold]'{match_term}'[/bold] non-word substring: {first_non_word.span()}")
         print(next(pretty_print(search_terms, SNOWBALL)))
         print("---")
 
