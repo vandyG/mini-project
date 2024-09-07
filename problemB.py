@@ -104,24 +104,33 @@ def main():
         count = len(match_list)
         word_count = len(just_words)
 
-        def min_func(match):
+        def min_max(match):
             return match.start()
 
-        first_substring = min(match_list, key=min_func)
-        first_word = min(just_words, key=min_func)
-        first_non_word = min(just_non_words, key=min_func)
+        first_substring = min(match_list, key=min_max)
+        first_word = min(just_words, key=min_max)
+        first_non_word = min(just_non_words, key=min_max)
+
+        last_substring = max(match_list, key=min_max)
+        last_word = max(just_words, key=min_max)
+        last_non_word = max(just_non_words, key=min_max)
 
         print(f"Total [bold]'{match_term}'[/bold] substrings: {count}")
         print(f"Total [bold]'{match_term}'[/bold] words: {word_count}")
         print(f"First [bold]'{match_term}'[/bold] substrings: {first_substring.span()}")
         print(f"First [bold]'{match_term}'[/bold] word: {first_word.span()}")
         print(f"First [bold]'{match_term}'[/bold] non-word substring: {first_non_word.span()}")
+        print(f"Last [bold]'{match_term}'[/bold] substrings: {last_substring.span()}")
+        print(f"Last [bold]'{match_term}'[/bold] word: {last_word.span()}")
+        print(f"Last [bold]'{match_term}'[/bold] non-word substring: {last_non_word.span()}")
+
         print(next(print_gen))
         print("---")
 
     len_poem = len(SNOWBALL) - SNOWBALL.count("\n")
 
     print(f"Number of characters in poem: {len_poem}")
+    print(f"Number of characters in poem (including line endings '\\n'): {len(SNOWBALL)}")
 
 
 # %%
