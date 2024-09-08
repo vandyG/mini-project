@@ -27,15 +27,30 @@ def main():
     parser = argparse.ArgumentParser(prog="problemA", description="Problem A")
     parser.add_argument("message", default=None, nargs="?")
     parser.add_argument("letter", default=None, nargs="?", type=set_get_letter)
+    parser.add_argument("--match-case", "-c", action="store_true")
     args, unknown = parser.parse_known_args(["--f"])
 
     if not args.message:
-        args.message = input("Please enter a message:")
+        args.message = input("Please enter a message: ")
     if not args.letter:
-        args.letter = set_get_letter(input("Please enter a letter to search:"))
+        args.letter = set_get_letter(input("Please enter a letter to search: "))
+    if not args.match_case:
+        match_case = input("Match case? [Y/N]: ")
+        if match_case.lower() not in ["y", "n"]:
+            raise TypeError("Invalid value for match_case. Please enter 'Y/N'")
+        if match_case.lower() == "y":
+            args.match_case = True
 
-    message: str = args.message.lower()  # type: ignore
-    letter: str = args.letter.lower()  # type: ignore
+    if not args.match_case:
+        message: str = args.message.lower()  # type: ignore
+        letter: str = args.letter.lower()  # type: ignore
+    else:
+        message: str = args.message  # type: ignore
+        letter: str = args.letter  # type: ignore
+
+    print(f"Message: {args.message}")
+    print(f"Letter: {args.letter}")
+    print(f"Match Case: {args.match_case}")
 
     count = message.count(letter)
     print(f"Count: {count}")
